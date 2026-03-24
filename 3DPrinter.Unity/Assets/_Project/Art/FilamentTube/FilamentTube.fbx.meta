@@ -1,69 +1,9 @@
 fileFormatVersion: 2
-guid: abd669a2c07cfc44c85159655803f186
+guid: d139d7e75b9be4a448a063513cdd3994
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: BlackGlass
-    second: {fileID: 2100000, guid: 0cb4b4dfd34ab674c9096ca856ba6d45, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: BlackMetal
-    second: {fileID: 2100000, guid: 755a9bb2da7bae24d8544cce68474cef, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: BlackPlastic
-    second: {fileID: 2100000, guid: 91db5cf4435aeaa4f9e840d47adb4133, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: BlackPlasticLabel
-    second: {fileID: 2100000, guid: dbada57078c7daa47a9492336835d155, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: BluePlastic
-    second: {fileID: 2100000, guid: c0ae147a844e817468a31514f6f87b59, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: HeatPlate
-    second: {fileID: 2100000, guid: c96093731bce38b4ebff27b272c769d1, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: PowerSwitch
-    second: {fileID: 2100000, guid: 1e6206e88b695e64d9b06280d902141c, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: RedPlastic
-    second: {fileID: 2100000, guid: 5e1b8ee768520c444b3ff6be4ce179fa, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Rubber
-    second: {fileID: 2100000, guid: c2ea29dbd2d81ac4da2b6f18a386593e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: VideoTexture
-    second: {fileID: 2100000, guid: aa6723f668b2cdb4ca3410c1f0100c46, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: WhiteMetal
-    second: {fileID: 2100000, guid: d0400e8cee4d1df44a3277f17edc0a85, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: WhitePlastic
-    second: {fileID: 2100000, guid: be755b15b18dbde42b147ef679926762, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
