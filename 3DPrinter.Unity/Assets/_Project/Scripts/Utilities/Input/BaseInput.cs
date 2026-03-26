@@ -136,6 +136,15 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""d163edf1-50b1-494f-add8-0e387c0a8fbd"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -237,6 +246,17 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d7fcfd59-62af-4efb-9a3d-42bc7e0c15cb"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -250,6 +270,7 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
         m_Game_Zoom = m_Game.FindAction("Zoom", throwIfNotFound: true);
         m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
         m_Game_Rotate = m_Game.FindAction("Rotate", throwIfNotFound: true);
+        m_Game_MousePosition = m_Game.FindAction("MousePosition", throwIfNotFound: true);
     }
 
     ~@BaseInput()
@@ -335,6 +356,7 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Game_Zoom;
     private readonly InputAction m_Game_Move;
     private readonly InputAction m_Game_Rotate;
+    private readonly InputAction m_Game_MousePosition;
     /// <summary>
     /// Provides access to input actions defined in input action map "Game".
     /// </summary>
@@ -366,6 +388,10 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Game/Rotate".
         /// </summary>
         public InputAction @Rotate => m_Wrapper.m_Game_Rotate;
+        /// <summary>
+        /// Provides access to the underlying input action "Game/MousePosition".
+        /// </summary>
+        public InputAction @MousePosition => m_Wrapper.m_Game_MousePosition;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -407,6 +433,9 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
             @Rotate.started += instance.OnRotate;
             @Rotate.performed += instance.OnRotate;
             @Rotate.canceled += instance.OnRotate;
+            @MousePosition.started += instance.OnMousePosition;
+            @MousePosition.performed += instance.OnMousePosition;
+            @MousePosition.canceled += instance.OnMousePosition;
         }
 
         /// <summary>
@@ -433,6 +462,9 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
             @Rotate.started -= instance.OnRotate;
             @Rotate.performed -= instance.OnRotate;
             @Rotate.canceled -= instance.OnRotate;
+            @MousePosition.started -= instance.OnMousePosition;
+            @MousePosition.performed -= instance.OnMousePosition;
+            @MousePosition.canceled -= instance.OnMousePosition;
         }
 
         /// <summary>
@@ -508,5 +540,12 @@ public partial class @BaseInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRotate(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MousePosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMousePosition(InputAction.CallbackContext context);
     }
 }

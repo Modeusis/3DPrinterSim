@@ -1,4 +1,5 @@
 using _Project.Scripts.Player.Camera;
+using _Project.Scripts.Player.Interaction;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,8 +11,12 @@ namespace _Project.Scripts.Player
         [SerializeField] private CameraData _cameraData;
         [SerializeField] private Transform _cameraTarget;
         
-        private CameraController _cameraController;
         private BaseInput _baseInput;
+        
+        private CameraController _cameraController;
+        private InteractionController _interactionController;
+        
+        private bool _isInitialized;
         
         private void Awake()
         {
@@ -19,6 +24,9 @@ namespace _Project.Scripts.Player
             _baseInput.Enable();
             
             InitializeCamera();
+            InitializeInput();
+            
+            _isInitialized = true;
         }
         
         private void InitializeCamera()
@@ -38,13 +46,21 @@ namespace _Project.Scripts.Player
             _cameraController = new CameraController();
             _cameraController.Init(_cameraData, _cameraTarget, _baseInput);
         }
+
+        private void InitializeInput()
+        {
+            _interactionController = new InteractionController(_baseInput, UnityEngine.Camera.main);
+        }
         
         private void Update()
         {
-            if (_cameraController != null)
+            if (!_isInitialized)
             {
-                _cameraController.UpdateCamera();
+                return;
             }
+            
+            _cameraController.Update();
+            _interactionController.Update();
         }
         
         private void OnDestroy()
