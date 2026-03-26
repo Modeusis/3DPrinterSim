@@ -17,7 +17,7 @@ namespace _Project.Scripts.Interactables
         protected abstract string AnimatorParameterName { get; }
         protected abstract TEnum StateElement { get; }
         
-        private bool _currentState;
+        protected bool CurrentState;
 
         [Inject]
         public void Construct(EventBus eventBus)
@@ -45,23 +45,23 @@ namespace _Project.Scripts.Interactables
             ToggleState();
         }
 
-        private void ToggleState()
+        protected virtual void ToggleState()
         {
-            _currentState = !_currentState;
+            CurrentState = !CurrentState;
             
-            _animator.SetBool(_cachedAnimatorHash, _currentState);
+            _animator.SetBool(_cachedAnimatorHash, CurrentState);
             
-            _eventBus.Publish(new OnInteractableStateChangedEvent<TEnum>(StateElement, _currentState));
+            _eventBus.Publish(new OnInteractableStateChangedEvent<TEnum>(StateElement, CurrentState));
         }
 
         protected void SetState(bool state)
         {
-            if (_currentState == state)
+            if (CurrentState == state)
                 return;
 
-            _currentState = state;
-            _animator.SetBool(_cachedAnimatorHash, _currentState);
-            _eventBus.Publish(new OnInteractableStateChangedEvent<TEnum>(StateElement, _currentState));
+            CurrentState = state;
+            _animator.SetBool(_cachedAnimatorHash, CurrentState);
+            _eventBus.Publish(new OnInteractableStateChangedEvent<TEnum>(StateElement, CurrentState));
         }
     }
 }

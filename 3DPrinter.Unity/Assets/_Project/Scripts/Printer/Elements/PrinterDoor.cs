@@ -1,6 +1,6 @@
 using _Project.Scripts.Interactables;
 
-namespace _Project.Scripts.Printer.Door
+namespace _Project.Scripts.Printer.Elements
 {
     public class PrinterDoor : InteractableBase<PrinterElement>
     {

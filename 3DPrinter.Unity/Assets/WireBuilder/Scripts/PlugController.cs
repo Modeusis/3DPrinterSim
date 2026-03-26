@@ -10,12 +10,19 @@ public class PlugController : MonoBehaviour
     public UnityEvent OnWirePlugged;
     public Transform plugPosition;
 
+    [SerializeField]
+    public float disconnectTime = 1f;
+    
     [HideInInspector]
     public Transform endAnchor;
     [HideInInspector]
     public Rigidbody endAnchorRB;
     [HideInInspector]
     public WireController wireController;
+
+    private bool _isDisconnecting;
+    private Coroutine _disconnectRoutine;
+    
     public void OnPlugged()
     {
         OnWirePlugged.Invoke();
@@ -25,6 +32,12 @@ public class PlugController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log(other.name);
+
+        if (_isDisconnecting)
+        {
+            return;
+        }
+        
         if (other.gameObject == endAnchor.gameObject)
         {
             isConected = true;
@@ -39,7 +52,6 @@ public class PlugController : MonoBehaviour
 
     private void Update()
     {
-
         if (isConected)
         {
             endAnchorRB.isKinematic = true;
@@ -47,5 +59,30 @@ public class PlugController : MonoBehaviour
             Vector3 eulerRotation = new Vector3(this.transform.eulerAngles.x + 90, this.transform.eulerAngles.y, this.transform.eulerAngles.z);
             endAnchor.transform.rotation = Quaternion.Euler(eulerRotation);
         }
+    }
+
+    public void StartDisconnect()
+    {
+        if (_disconnectRoutine != null)
+        {
+            StopCoroutine(_disconnectRoutine);
+            _disconnectRoutine = null;
+        }
+        
+        _disconnectRoutine = StartCoroutine(DisconnectRoutine(disconnectTime));
+    }
+
+    private IEnumerator DisconnectRoutine(float delayTime)
+    {
+        _isDisconnecting = true;
+        
+        yield return new WaitForSeconds(delayTime);
+        
+        _isDisconnecting = false;
+    }
+    
+    public void SetDisconnectState(bool state = true)
+    {
+        _isDisconnecting = state;
     }
 }
