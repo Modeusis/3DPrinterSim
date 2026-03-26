@@ -115,7 +115,7 @@ namespace _Project.Scripts.Player.Camera
             if (!(Mathf.Abs(scroll) > 0.01f))
                 return;
         
-            _data.Follow.RadialAxis.Value -= scroll * _data.ZoomSpeed;
+            _data.Follow.RadialAxis.Value -= scroll * _data.ZoomSpeed * Time.deltaTime;
             _data.Follow.RadialAxis.Value = Mathf.Clamp(_data.Follow.RadialAxis.Value, _data.MinZoom, _data.MaxZoom);
         }
     
