@@ -1,5 +1,6 @@
 using _Project.Scripts.Player.Camera;
 using _Project.Scripts.Player.Interaction;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,6 +21,15 @@ namespace _Project.Scripts.Player
         
         private void Awake()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 120;
+            
+            WebGLInput.captureAllKeyboardInput = false;            
+#endif
+            
+            PrimeTweenConfig.validateCustomCurves = false;
+            
             _baseInput = new BaseInput();
             _baseInput.Enable();
             
