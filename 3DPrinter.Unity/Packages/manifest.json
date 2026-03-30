@@ -3,6 +3,7 @@
     "com.cysharp.unitask": "git+https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.kyrylokuzyk.primetween": "file:../Assets/Plugins/PrimeTween/internal/com.kyrylokuzyk.primetween.tgz",
     "com.modeusis.simplesetuptool": "https://github.com/Modeusis/SimpleSetupTool.git",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.addressables": "2.10.0",
     "com.unity.ai.navigation": "2.0.10",
     "com.unity.animation.rigging": "1.4.1",

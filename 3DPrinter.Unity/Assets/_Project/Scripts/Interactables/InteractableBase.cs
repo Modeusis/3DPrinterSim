@@ -45,7 +45,7 @@ namespace _Project.Scripts.Interactables
             ToggleState();
         }
 
-        protected virtual void ToggleState()
+        private void ToggleState()
         {
             CurrentState = !CurrentState;
             

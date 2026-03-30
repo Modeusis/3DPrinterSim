@@ -1,5 +1,6 @@
 using _Project.Scripts.Player.Camera;
 using _Project.Scripts.Player.Interaction;
+using PrimeTween;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +11,7 @@ namespace _Project.Scripts.Player
         [Header("Camera Setup")]
         [SerializeField] private CameraData _cameraData;
         [SerializeField] private Transform _cameraTarget;
+        [SerializeField] private CameraChanger _cameraChanger;
         
         private BaseInput _baseInput;
         
@@ -20,6 +22,16 @@ namespace _Project.Scripts.Player
         
         private void Awake()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 120;
+            
+            WebGLInput.captureAllKeyboardInput = false;            
+#endif
+            
+            PrimeTweenConfig.validateCustomCurves = false;
+            PrimeTweenConfig.warnEndValueEqualsCurrent = false;
+            
             _baseInput = new BaseInput();
             _baseInput.Enable();
             
@@ -43,6 +55,8 @@ namespace _Project.Scripts.Player
                 _cameraTarget = transform;
             }
             
+            _cameraChanger.RestoreCamera();
+            
             _cameraController = new CameraController();
             _cameraController.Init(_cameraData, _cameraTarget, _baseInput);
         }
@@ -59,8 +73,12 @@ namespace _Project.Scripts.Player
                 return;
             }
             
-            _cameraController.Update();
             _interactionController.Update();
+
+            if (!_cameraChanger.IsOnMainCamera())
+                return;
+            
+            _cameraController.Update();
         }
         
         private void OnDestroy()
