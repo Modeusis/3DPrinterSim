@@ -60,6 +60,16 @@ namespace _Project.Scripts.Player.Camera
                 Debug.LogWarning("[CameraChanger.RestoreCamera] No orbital follow component found on start camera");
                 return;
             }
+
+            var focusPoint = _setupChangerData.CameraFocusPoint;
+            if (focusPoint)
+            {
+                focusPoint.position = _setupChangerData.FocusPointStartPosition;
+            }
+            else
+            {
+                Debug.LogWarning("[CameraChanger.RestoreCamera] No focus point found");
+            }
             
             ChangeCamera(startCamera);
         }
