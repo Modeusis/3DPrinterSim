@@ -12,6 +12,14 @@ namespace _Project.Scripts.Player.Camera
         
         private CinemachineCamera _currentCamera;
 
+        public bool IsOnMainCamera()
+        {
+            if (_currentCamera == null)
+                return false;
+            
+            return _currentCamera == _setupChangerData.StartCamera;
+        }
+        
         public void ChangeCamera(CinemachineCamera newCamera)
         {
             if (!newCamera)
