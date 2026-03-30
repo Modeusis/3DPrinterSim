@@ -5,7 +5,7 @@ namespace _Project.Scripts.Printer.Elements
 {
     public class Highlighter : MonoBehaviour
     {
-        [SerializeField] private Color _highlightTint;
+        [SerializeField] private Color _highlightTint = Color.yellow;
         
         private Dictionary<Material, Color> _materialsData = new ();
         
@@ -13,13 +13,13 @@ namespace _Project.Scripts.Printer.Elements
         {
             var mesh = GetComponent<MeshRenderer>();
             
-            foreach (var material in mesh.sharedMaterials)
+            foreach (var material in mesh.materials)
             {
                 _materialsData.Add(material, material.color);
             }
         }
 
-        private void Highlight()
+        public void Highlight()
         {
             foreach (var material in _materialsData.Keys)
             {
@@ -27,7 +27,7 @@ namespace _Project.Scripts.Printer.Elements
             }
         }
 
-        private void Restore()
+        public void Restore()
         {
             foreach (var material in _materialsData.Keys)
             {
