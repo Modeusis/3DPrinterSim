@@ -1,4 +1,5 @@
 using _Project.Scripts.Player.Interaction;
+using _Project.Scripts.Utilities.Events;
 using Game.Scripts.Utilities.Events;
 using PrimeTween;
 using UnityEngine;
