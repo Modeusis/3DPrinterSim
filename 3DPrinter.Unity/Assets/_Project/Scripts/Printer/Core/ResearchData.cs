@@ -1,3 +1,5 @@
+using System;
+
 namespace _Project.Scripts.Printer.Core
 {
     public class ResearchData
@@ -8,6 +10,7 @@ namespace _Project.Scripts.Printer.Core
         public float Accuracy { get; set; }
     }
     
+    [Serializable]
     public class Complexity
     {
         public ModelType Type { get; set; } = ModelType.Unknown;
