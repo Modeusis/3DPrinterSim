@@ -2,31 +2,40 @@ using UnityEngine;
 
 namespace _Project.Scripts.Printer.Visual
 {
+    [ExecuteAlways]
+    [RequireComponent(typeof(MeshRenderer))]
     public class ShaderGraphClipper : MonoBehaviour
     {
         private static readonly int CuttingPlane = Shader.PropertyToID("_CuttingPlane");
         
         [SerializeField] private Transform _cuttingPlane;
-        private Material _material;
+        
+        private MeshRenderer _meshRenderer;
+        private MaterialPropertyBlock _propBlock;
 
-        private void Start()
+        private void OnEnable()
         {
-            _material = GetComponent<MeshRenderer>().material;
+            _meshRenderer = GetComponent<MeshRenderer>();
+            _propBlock = new MaterialPropertyBlock();
         }
 
         private void Update()
         {
-            if (!_cuttingPlane)
+            if (!_cuttingPlane || _meshRenderer == null)
                 return;
+            
+            if (_propBlock == null)
+                _propBlock = new MaterialPropertyBlock();
 
             var normal = _cuttingPlane.up;
             var planePos = _cuttingPlane.position;
 
             var distance = -Vector3.Dot(normal, planePos);
-
             var planeData = new Vector4(normal.x, normal.y, normal.z, distance);
-
-            _material.SetVector(CuttingPlane, planeData);
+            
+            _meshRenderer.GetPropertyBlock(_propBlock);
+            _propBlock.SetVector(CuttingPlane, planeData);
+            _meshRenderer.SetPropertyBlock(_propBlock);
         }
     }
 }
