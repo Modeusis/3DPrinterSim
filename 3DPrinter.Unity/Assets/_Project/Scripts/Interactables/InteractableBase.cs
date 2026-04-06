@@ -41,7 +41,7 @@ namespace _Project.Scripts.Interactables
             _eventBus.Publish(new OnInteractableHoverEvent(_interactableName, false));
         }
 
-        public void OnClick()
+        public virtual void OnClick()
         {
             ToggleState();
         }

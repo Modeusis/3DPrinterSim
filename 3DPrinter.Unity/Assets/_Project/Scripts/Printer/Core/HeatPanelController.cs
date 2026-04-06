@@ -9,6 +9,17 @@ namespace _Project.Scripts.Printer.Core
         [SerializeField] private Transform _panelTransform;
 
         [field: SerializeField] public float MoveSpeed { get; private set; } = 5f;
+        public float StartLocalZ { get; private set; }
+
+        private void Awake()
+        {
+            if (_panelTransform == null)
+            {
+                _panelTransform = transform;
+            }
+
+            StartLocalZ = _panelTransform.localPosition.z;
+        }
 
         public async UniTask MoveToHeightAsync(float targetZ, CancellationToken token)
         {
@@ -16,7 +27,7 @@ namespace _Project.Scripts.Printer.Core
             Vector3 targetPos = new Vector3(startPos.x, startPos.y, targetZ);
         
             float distance = Mathf.Abs(targetZ - startPos.z);
-            float duration = distance / MoveSpeed;
+            float duration = distance / Mathf.Max(0.001f, MoveSpeed);
             float elapsed = 0;
 
             while (elapsed < duration)
@@ -30,6 +41,11 @@ namespace _Project.Scripts.Printer.Core
             }
 
             _panelTransform.localPosition = targetPos;
+        }
+
+        public UniTask MoveToStartAsync(CancellationToken token)
+        {
+            return MoveToHeightAsync(StartLocalZ, token);
         }
     }
 }

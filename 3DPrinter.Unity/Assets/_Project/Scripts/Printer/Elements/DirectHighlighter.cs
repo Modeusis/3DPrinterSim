@@ -9,6 +9,7 @@ namespace _Project.Scripts.Printer.Elements
         [SerializeField] private Color _highlightTint = Color.yellow;
         
         private Color _originalColor;
+        private bool _isHighlighted;
         
         private void Awake()
         {
@@ -26,15 +27,18 @@ namespace _Project.Scripts.Printer.Elements
         {
             if (_targetMaterial != null)
             {
+                _originalColor = _targetMaterial.color;
                 _targetMaterial.color = _highlightTint;
+                _isHighlighted = true;
             }
         }
 
         public void Restore()
         {
-            if (_targetMaterial != null)
+            if (_targetMaterial != null && _isHighlighted)
             {
                 _targetMaterial.color = _originalColor;
+                _isHighlighted = false;
             }
         }
     }

@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d93cca2ca14c41368e16d69f74693251, type: 3}
+  m_Name: Vase
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Setups.Printer.ModelSetup
+  <Prefab>k__BackingField: {fileID: 6513529116338541203, guid: bd903cbfe9f79b4469f6c86ac737d7f8, type: 3}
+  <Screenshot>k__BackingField: {fileID: 21300000, guid: 9486b5de42bb98d4fa789b1881e42c71, type: 3}
+  <TargetHeatPanelHeight>k__BackingField: 0.00945
+  _layers:
+  - <Z>k__BackingField: 0.009302
+    <Points>k__BackingField:
+    - {x: 0.00142, y: 0}
+    - {x: 0, y: 0.000484}
+    - {x: -0.00142, y: 0}
+    - {x: 0, y: -0.000484}
+  - <Z>k__BackingField: 0.009026
+    <Points>k__BackingField:
+    - {x: 0, y: 0.000679}
+    - {x: 0.0019, y: -0.000339}
+    - {x: 0.00212, y: 0}
+    - {x: 0.0019, y: 0.000339}
+    - {x: 0, y: 0.000679}
+    - {x: 0.0019, y: -0.000339}
+    - {x: -0.00212, y: 0}
+    - {x: -0.0019, y: 0.000339}
+    - {x: 0, y: -0.000679}
+  - <Z>k__BackingField: 0.008536
+    <Points>k__BackingField:
+    - {x: 0, y: -0.00091}
+    - {x: 0.00168, y: -0.000521}
+    - {x: 0.00249, y: 0}
+    - {x: 0.00168, y: 0.000521}
+    - {x: 0, y: 0.00091}
+    - {x: -0.00168, y: 0.000521}
+    - {x: -0.00249, y: 0}
+    - {x: -0.00168, y: -0.000521}
+    - {x: 0, y: -0.00091}
+  - <Z>k__BackingField: 0.007866
+    <Points>k__BackingField:
+    - {x: 0, y: -0.00091}
+    - {x: 0.00168, y: -0.000521}
+    - {x: 0.00249, y: 0}
+    - {x: 0.00168, y: 0.000521}
+    - {x: 0, y: 0.00091}
+    - {x: -0.00168, y: 0.000521}
+    - {x: -0.00249, y: 0}
+    - {x: -0.00168, y: -0.000521}
+    - {x: 0, y: -0.00091}
+  - <Z>k__BackingField: 0.007225
+    <Points>k__BackingField:
+    - {x: 0, y: -0.000593}
+    - {x: 0.00081, y: -0.000398}
+    - {x: 0.00157, y: 0}
+    - {x: 0.00081, y: 0.000398}
+    - {x: 0, y: 0.000593}
+    - {x: -0.00081, y: 0.000398}
+    - {x: -0.00157, y: 0}
+    - {x: -0.00081, y: -0.000398}
+    - {x: 0, y: -0.000593}
+  - <Z>k__BackingField: 0.006461
+    <Points>k__BackingField:
+    - {x: 0, y: -0.000283}
+    - {x: 0.00057, y: 0}
+    - {x: 0, y: 0.000283}
+    - {x: -0.00057, y: 0}
+    - {x: 0, y: -0.000283}
+  - <Z>k__BackingField: 0.0059
+    <Points>k__BackingField:
+    - {x: 0, y: -0.000283}
+    - {x: 0.00057, y: 0}
+    - {x: 0, y: 0.000283}
+    - {x: -0.00057, y: 0}
+    - {x: 0, y: -0.000283}
+  - <Z>k__BackingField: 0.00538
+    <Points>k__BackingField:
+    - {x: 0, y: -0.000283}
+    - {x: 0.00057, y: 0}
+    - {x: 0, y: 0.000283}
+    - {x: -0.00057, y: 0}
+    - {x: 0, y: -0.000283}
+  - <Z>k__BackingField: 0.00499
+    <Points>k__BackingField:
+    - {x: 0, y: -0.0005}
+    - {x: 0.00118, y: -0.00034}
+    - {x: 0.00131, y: 0}
+    - {x: 0.00118, y: 0.00034}
+    - {x: 0, y: 0.0005}
+    - {x: -0.00118, y: 0.00034}
+    - {x: -0.00131, y: 0}
+    - {x: -0.00118, y: -0.00034}
+    - {x: 0, y: -0.0005}
+  - <Z>k__BackingField: 0.00467
+    <Points>k__BackingField:
+    - {x: 0, y: -0.00062}
+    - {x: 0.00131, y: -0.00035}
+    - {x: 0.00157, y: 0}
+    - {x: 0.00131, y: 0.00035}
+    - {x: 0, y: 0.00062}
+    - {x: -0.00131, y: 0.00035}
+    - {x: -0.00157, y: 0}
+    - {x: -0.00131, y: -0.00035}
+    - {x: 0, y: -0.00062}
+  _temperatureBySpeed:
+  - <SpeedType>k__BackingField: 0
+    <Temperature>k__BackingField: 205
+  - <SpeedType>k__BackingField: 1
+    <Temperature>k__BackingField: 208
+  - <SpeedType>k__BackingField: 2
+    <Temperature>k__BackingField: 215
+  _defaultTemperature: 200

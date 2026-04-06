@@ -14,9 +14,15 @@ namespace _Project.Scripts.Printer.Core
         [SerializeField] private Transform _extruderX;
     
         [Header("Настройки скорости (ед. Unity в секунду)")]
-        private SpeedProfilesSetup _speedProfiles;
+        [SerializeField] private SpeedProfilesSetup _speedProfiles;
         
         public bool IsMoving { get; private set; }
+        public Vector2 StartPoint { get; private set; }
+
+        private void Awake()
+        {
+            StartPoint = new Vector2(_extruderX.localPosition.x, _yAxis.localPosition.y);
+        }
         
         public async UniTask MoveToPointAsync(Vector2 targetLocalPoint, SpeedType speedType, CancellationToken token = default)
         {
@@ -71,6 +77,11 @@ namespace _Project.Scripts.Printer.Core
             {
                 IsMoving = false;
             }
+        }
+
+        public UniTask MoveToStartAsync(SpeedType speedType, CancellationToken token = default)
+        {
+            return MoveToPointAsync(StartPoint, speedType, token);
         }
     }
 }

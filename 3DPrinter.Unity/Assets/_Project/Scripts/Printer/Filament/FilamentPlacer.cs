@@ -10,17 +10,20 @@ namespace _Project.Scripts.Printer.Filament
     public class FilamentPlacer : MonoBehaviour, IClickable
     {
         [Header("Animation Settings")]
-        [SerializeField] private Animator _animator;
+        [SerializeField] private Transform _placerTransform;
         [SerializeField] private Transform _filamentTransform;
         
         [Header("Tween Settings")]
         [SerializeField] private Ease _ease = Ease.InOutSine;
+        [SerializeField] private Vector3 _rotationAxis = Vector3.up;
+        [SerializeField] private float _rotationSpeedDegreesPerSecond = 360f;
         
         private EventBus _eventBus;
         
         private Sequence _placementSequence;
+        private Tween _rotationTween;
         private bool _isPlaced;
-        private int _isRotatingHash;
+        private bool _isFilamentRemovalBlocked;
         
         private static readonly Vector3 StartPosition = new Vector3(-0.6988287f, 1.5209386f, 1.2248555f);
         private static readonly Vector3 StartRotation = new Vector3(-90f, 0f, 0f);
@@ -45,9 +48,15 @@ namespace _Project.Scripts.Printer.Filament
             _eventBus = eventBus;
         }
 
-        private void Awake()
+        private void OnEnable()
         {
-            _isRotatingHash = Animator.StringToHash("IsRotating");
+            _eventBus?.Subscribe<OnPrintSafetyLockChanged>(OnPrintSafetyLockChanged);
+        }
+
+        private void OnDisable()
+        {
+            _eventBus?.Unsubscribe<OnPrintSafetyLockChanged>(OnPrintSafetyLockChanged);
+            StopRotation();
         }
 
         public void OnBeginHover()
@@ -62,6 +71,11 @@ namespace _Project.Scripts.Printer.Filament
 
         public void OnClick()
         {
+            if (_isFilamentRemovalBlocked)
+            {
+                return;
+            }
+
             TogglePlacement();
         }
 
@@ -84,28 +98,29 @@ namespace _Project.Scripts.Printer.Filament
         private void PlayPlacementSequence()
         {
             _placementSequence = Sequence.Create()
-                .Group(Tween.LocalPosition(_filamentTransform, IntermediatePosition1, Duration1, _ease))
-                .Group(Tween.LocalRotation(_filamentTransform, Quaternion.Euler(IntermediateRotation1), Duration1, _ease))
-                .Chain(Tween.LocalPosition(_filamentTransform, IntermediatePosition2, Duration2, _ease))
-                .Chain(Tween.LocalPosition(_filamentTransform, IntermediatePosition3, Duration3, _ease))
-                .Chain(Tween.LocalPosition(_filamentTransform, FinalPosition, Duration4, _ease))
+                .Group(Tween.LocalPosition(_placerTransform, IntermediatePosition1, Duration1, _ease))
+                .Group(Tween.LocalRotation(_placerTransform, Quaternion.Euler(IntermediateRotation1), Duration1, _ease))
+                .Chain(Tween.LocalPosition(_placerTransform, IntermediatePosition2, Duration2, _ease))
+                .Chain(Tween.LocalPosition(_placerTransform, IntermediatePosition3, Duration3, _ease))
+                .Chain(Tween.LocalPosition(_placerTransform, FinalPosition, Duration4, _ease))
                 .OnComplete(() => OnPlacementComplete(true));
         }
 
         private void PlayRemovalSequence()
         {
             _placementSequence = Sequence.Create()
-                .Group(Tween.LocalPosition(_filamentTransform, IntermediatePosition3, Duration4, _ease))
-                .Chain(Tween.LocalPosition(_filamentTransform, IntermediatePosition2, Duration3, _ease))
-                .Chain(Tween.LocalPosition(_filamentTransform, IntermediatePosition1, Duration2, _ease))
-                .Group(Tween.LocalPosition(_filamentTransform, StartPosition, Duration1, _ease))
-                .Group(Tween.LocalRotation(_filamentTransform, Quaternion.Euler(StartRotation), Duration1, _ease))
+                .Group(Tween.LocalPosition(_placerTransform, IntermediatePosition3, Duration4, _ease))
+                .Chain(Tween.LocalPosition(_placerTransform, IntermediatePosition2, Duration3, _ease))
+                .Chain(Tween.LocalPosition(_placerTransform, IntermediatePosition1, Duration2, _ease))
+                .Group(Tween.LocalPosition(_placerTransform, StartPosition, Duration1, _ease))
+                .Group(Tween.LocalRotation(_placerTransform, Quaternion.Euler(StartRotation), Duration1, _ease))
                 .OnComplete(() => OnPlacementComplete(false));
         }
 
         private void OnPlacementComplete(bool placed)
         {
             _eventBus.Publish(new OnInteractableStateChangedEvent<PrinterElement>(PrinterElement.Filament, placed));
+            _eventBus.Publish(new OnFilamentStateChanged { IsPlaced = placed });
         }
 
         private void StopCurrentTween()
@@ -116,19 +131,64 @@ namespace _Project.Scripts.Printer.Filament
             }
         }
 
+        private void OnPrintSafetyLockChanged(OnPrintSafetyLockChanged evt)
+        {
+            _isFilamentRemovalBlocked = evt.IsFilamentRemovalBlocked;
+        }
+
         public void BeginRotation()
         {
-            _animator.SetBool(_isRotatingHash, true);
+            if (_placerTransform == null)
+            {
+                return;
+            }
+
+            if (_rotationTween.isAlive)
+            {
+                return;
+            }
+
+            StartRotationLoop();
         }
 
         public void StopRotation()
         {
-            _animator.SetBool(_isRotatingHash, false);
+            if (_rotationTween.isAlive)
+            {
+                _rotationTween.Stop();
+            }
         }
 
         private void OnDestroy()
         {
             StopCurrentTween();
+            StopRotation();
+        }
+
+        private void Start()
+        {
+            _eventBus.Publish(new OnFilamentStateChanged { IsPlaced = _isPlaced });
+        }
+
+        private void StartRotationLoop()
+        {
+            if (_filamentTransform == null)
+            {
+                return;
+            }
+            
+            var axis = _rotationAxis.sqrMagnitude > 0f ? _rotationAxis.normalized : Vector3.up;
+            var duration = 360f / Mathf.Max(1f, _rotationSpeedDegreesPerSecond);
+            var targetEuler = _filamentTransform.localEulerAngles + (axis * 360f);
+
+            _rotationTween = Tween.LocalEulerAngles(_filamentTransform, 
+                _filamentTransform.localEulerAngles,
+                targetEuler,
+                duration,
+                cycles: -1,
+                cycleMode: CycleMode.Incremental,
+                ease: _ease
+            );
         }
     }
 }

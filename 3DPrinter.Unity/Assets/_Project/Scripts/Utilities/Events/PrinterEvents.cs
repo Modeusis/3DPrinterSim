@@ -1,4 +1,5 @@
 using UnityEngine;
+using _Project.Scripts.Setups.Printer;
 
 namespace _Project.Scripts.Utilities.Events
 {
@@ -27,7 +28,75 @@ namespace _Project.Scripts.Utilities.Events
         public Color Color { get; set; }
     }
     
-    public struct OnPrintProcessStarted { }
-    public struct OnPrintProcessFinished { }
+    public struct OnPrintProcessStarted
+    {
+        public ModelSetup Model { get; }
+        public SpeedType SpeedType { get; }
+
+        public OnPrintProcessStarted(ModelSetup model, SpeedType speedType)
+        {
+            Model = model;
+            SpeedType = speedType;
+        }
+    }
+
+    public struct OnPrintProcessFinished
+    {
+        public ModelSetup Model { get; }
+        public SpeedType SpeedType { get; }
+
+        public OnPrintProcessFinished(ModelSetup model, SpeedType speedType)
+        {
+            Model = model;
+            SpeedType = speedType;
+        }
+    }
+
+    public struct OnPrintProgressChanged
+    {
+        public float ProgressPercent { get; }
+
+        public OnPrintProgressChanged(float progressPercent)
+        {
+            ProgressPercent = progressPercent;
+        }
+    }
+
+    public struct OnPrintTemperatureChanged
+    {
+        public int Temperature { get; }
+
+        public OnPrintTemperatureChanged(int temperature)
+        {
+            Temperature = temperature;
+        }
+    }
+
+    public struct OnPrintSafetyLockChanged
+    {
+        public bool IsPowerToggleBlocked { get; }
+        public bool IsFilamentRemovalBlocked { get; }
+        public bool IsPlugToggleBlocked { get; }
+
+        public OnPrintSafetyLockChanged(bool isPowerToggleBlocked, bool isFilamentRemovalBlocked, bool isPlugToggleBlocked)
+        {
+            IsPowerToggleBlocked = isPowerToggleBlocked;
+            IsFilamentRemovalBlocked = isFilamentRemovalBlocked;
+            IsPlugToggleBlocked = isPlugToggleBlocked;
+        }
+    }
+
+    public struct OnFinishedModelSpawned
+    {
+        public GameObject ModelInstance { get; }
+
+        public OnFinishedModelSpawned(GameObject modelInstance)
+        {
+            ModelInstance = modelInstance;
+        }
+    }
+
+    public struct OnFinishedModelCollected { }
+    public struct OnNextPrintUnlocked { }
     public struct OnPrinterPanelCleared { }
 }

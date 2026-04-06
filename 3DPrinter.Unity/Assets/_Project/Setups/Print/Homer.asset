@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d93cca2ca14c41368e16d69f74693251, type: 3}
+  m_Name: Homer
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Setups.Printer.ModelSetup
+  <Prefab>k__BackingField: {fileID: 6513529116338541203, guid: bd903cbfe9f79b4469f6c86ac737d7f8, type: 3}
+  <Screenshot>k__BackingField: {fileID: 21300000, guid: 1376a3a4bba28ab4a9b80a82c0070fa9, type: 3}
+  <TargetHeatPanelHeight>k__BackingField: 0.00945
+  _layers: []
+  _temperatureBySpeed:
+  - <SpeedType>k__BackingField: 0
+    <Temperature>k__BackingField: 220
+  - <SpeedType>k__BackingField: 1
+    <Temperature>k__BackingField: 240
+  - <SpeedType>k__BackingField: 2
+    <Temperature>k__BackingField: 280
+  _defaultTemperature: 208

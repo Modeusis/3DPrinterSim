@@ -28,6 +28,7 @@ namespace _Project.Scripts.Printer.Plug
         private EventBus _eventBus;
         private Sequence _plugSequence;
         private bool _isPlugged;
+        private bool _isPlugToggleBlocked;
         
         private static readonly Vector3 UnpluggedPosition = new Vector3(-0.896084368f, 1.52068841f, -1.18789697f);
         private static readonly Vector3 UnpluggedRotation = new Vector3(0, 240f, 0);
@@ -61,6 +62,11 @@ namespace _Project.Scripts.Printer.Plug
 
         public void OnClick()
         {
+            if (_isPlugToggleBlocked)
+            {
+                return;
+            }
+
             TogglePlug();
         }
 
@@ -109,6 +115,7 @@ namespace _Project.Scripts.Printer.Plug
             }
             
             _eventBus.Publish(new OnInteractableStateChangedEvent<PrinterElement>(PrinterElement.Plug, plugged));
+            _eventBus.Publish(new OnPlugStateChanged { IsPlugged = plugged });
         }
 
         private void ConnectWire()
@@ -150,6 +157,26 @@ namespace _Project.Scripts.Printer.Plug
         private void OnDestroy()
         {
             StopCurrentTween();
+        }
+
+        private void OnEnable()
+        {
+            _eventBus?.Subscribe<OnPrintSafetyLockChanged>(OnPrintSafetyLockChanged);
+        }
+
+        private void OnDisable()
+        {
+            _eventBus?.Unsubscribe<OnPrintSafetyLockChanged>(OnPrintSafetyLockChanged);
+        }
+
+        private void Start()
+        {
+            _eventBus.Publish(new OnPlugStateChanged { IsPlugged = _isPlugged });
+        }
+
+        private void OnPrintSafetyLockChanged(OnPrintSafetyLockChanged evt)
+        {
+            _isPlugToggleBlocked = evt.IsPlugToggleBlocked;
         }
     }
 }

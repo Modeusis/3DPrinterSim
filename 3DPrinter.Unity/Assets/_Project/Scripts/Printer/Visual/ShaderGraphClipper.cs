@@ -19,6 +19,11 @@ namespace _Project.Scripts.Printer.Visual
             _propBlock = new MaterialPropertyBlock();
         }
 
+        public void SetCuttingPlane(Transform cuttingPlane)
+        {
+            _cuttingPlane = cuttingPlane;
+        }
+
         private void Update()
         {
             if (!_cuttingPlane || _meshRenderer == null)
