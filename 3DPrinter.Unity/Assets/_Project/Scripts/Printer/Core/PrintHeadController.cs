@@ -96,5 +96,10 @@ namespace _Project.Scripts.Printer.Core
         {
             return MoveToPointAsync(StartPoint, speedType, token);
         }
+
+        public float GetSpeedValue(SpeedType speedType)
+        {
+            return _speedProfiles != null ? _speedProfiles.GetSpeed(speedType) : 0f;
+        }
     }
 }

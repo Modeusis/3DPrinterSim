@@ -1,5 +1,6 @@
 using _Project.Scripts.Player.Interaction;
 using _Project.Scripts.Printer;
+using _Project.Scripts.UI.Tasks;
 using _Project.Scripts.Utilities.Events;
 using Game.Scripts.Utilities.Events;
 using PrimeTween;
@@ -26,6 +27,7 @@ namespace _Project.Scripts.Printer.Plug
         public UnityEvent OnWirePlugged;
         
         private EventBus _eventBus;
+        private TaskManager _taskManager;
         private Sequence _plugSequence;
         private bool _isPlugged;
         private bool _isPlugToggleBlocked;
@@ -45,9 +47,10 @@ namespace _Project.Scripts.Printer.Plug
         private const float Duration3 = 1f;
 
         [Inject]
-        public void Construct(EventBus eventBus)
+        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
         {
             _eventBus = eventBus;
+            _taskManager = taskManager;
         }
 
         public void OnBeginHover()
@@ -64,6 +67,8 @@ namespace _Project.Scripts.Printer.Plug
         {
             if (_isPlugToggleBlocked)
             {
+                Debug.LogWarning("[PrinterPlug.OnClick] Нельзя отключать принтер от сети во время печати.");
+                _taskManager?.ShowMessage("Нельзя отключать принтер от сети во время печати.");
                 return;
             }
 
@@ -112,6 +117,11 @@ namespace _Project.Scripts.Printer.Plug
             {
                 ConnectWire();
                 OnWirePlugged?.Invoke();
+                _taskManager?.CompleteStep(TaskStepType.PlugPrinter);
+            }
+            else
+            {
+                _taskManager?.UncompleteStep(TaskStepType.PlugPrinter);
             }
             
             _eventBus.Publish(new OnInteractableStateChangedEvent<PrinterElement>(PrinterElement.Plug, plugged));

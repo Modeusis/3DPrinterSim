@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using _Project.Scripts.Setups.Printer;
+using _Project.Scripts.UI.Tasks;
 using _Project.Scripts.Utilities.Events;
 using _Project.Scripts.Printer.Visual;
 using _Project.Scripts.Printer.Filament;
@@ -29,7 +30,13 @@ namespace _Project.Scripts.Printer.Core
         [Header("Cooling fans")]
         [SerializeField] private List<FanRotationSettings> _fans = new List<FanRotationSettings>();
 
+        [Header("Temperature simulation")]
+        [SerializeField] private int _lowSpeedTemperatureOffset;
+        [SerializeField] private int _mediumSpeedTemperatureOffset = 8;
+        [SerializeField] private int _highSpeedTemperatureOffset = 15;
+
         private EventBus _eventBus;
+        private TaskManager _taskManager;
         private CancellationTokenSource _printCts;
         private bool _awaitingModelPickup;
         private GameObject _currentPrintedModel;
@@ -40,9 +47,10 @@ namespace _Project.Scripts.Printer.Core
         public bool CanStartNextPrint => !IsPrinting && !_awaitingModelPickup;
 
         [Inject]
-        public void Construct(EventBus eventBus)
+        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
         {
             _eventBus = eventBus;
+            _taskManager = taskManager;
         }
 
         public async UniTask<bool> StartPrintAsync(ModelSetup modelSetup, SpeedType speedType)
@@ -63,8 +71,10 @@ namespace _Project.Scripts.Printer.Core
             _printCts = new CancellationTokenSource();
             var token = _printCts.Token;
 
+            var speedValue = _printerHeadController != null ? _printerHeadController.GetSpeedValue(speedType) : 0f;
+
             _eventBus.Publish(new OnPrintSafetyLockChanged(true, true, true));
-            _eventBus.Publish(new OnPrintProcessStarted(modelSetup, speedType));
+            _eventBus.Publish(new OnPrintProcessStarted(modelSetup, speedType, speedValue));
             _eventBus.Publish(new OnPrintProgressChanged(0f));
 
             try
@@ -74,7 +84,9 @@ namespace _Project.Scripts.Printer.Core
                 SpawnPrintedModel(modelSetup, false);
 
                 var completedPoints = 0;
-                var baseTemperature = modelSetup.GetTemperature(speedType);
+                var idealTemperature = modelSetup.TargetTemperature;
+                var speedTemperatureOffset = GetSpeedTemperatureOffset(speedType);
+                var actualTemperatureBase = idealTemperature + speedTemperatureOffset;
 
                 foreach (var layer in modelSetup.Layers)
                 {
@@ -90,7 +102,7 @@ namespace _Project.Scripts.Printer.Core
                         await _printerHeadController.MoveToPointAsync(point, speedType, token);
                         completedPoints++;
 
-                        var temperature = baseTemperature + UnityEngine.Random.Range(-2, 3);
+                        var temperature = actualTemperatureBase + UnityEngine.Random.Range(-2, 3);
                         var progress = Mathf.Clamp01((float)completedPoints / totalPoints) * 100f;
 
                         _eventBus.Publish(new OnPrintTemperatureChanged(temperature));
@@ -98,7 +110,7 @@ namespace _Project.Scripts.Printer.Core
                     }
                 }
 
-                _eventBus.Publish(new OnPrintProcessFinished(modelSetup, speedType));
+                _eventBus.Publish(new OnPrintProcessFinished(modelSetup, speedType, speedValue));
                 if (_currentCollectable != null)
                 {
                     _currentCollectable.SetCollectable(true);
@@ -195,6 +207,7 @@ namespace _Project.Scripts.Printer.Core
 
         private void OnFinishedModelCollectedInternal()
         {
+            _taskManager?.CompleteStep(TaskStepType.CollectModel);
             _currentPrintedModel = null;
             _currentCollectable = null;
             _awaitingModelPickup = false;
@@ -253,6 +266,17 @@ namespace _Project.Scripts.Printer.Core
 
                 clipper.SetCuttingPlane(_clippingPlane);
             }
+        }
+
+        private int GetSpeedTemperatureOffset(SpeedType speedType)
+        {
+            return speedType switch
+            {
+                SpeedType.Low => _lowSpeedTemperatureOffset,
+                SpeedType.Medium => _mediumSpeedTemperatureOffset,
+                SpeedType.High => _highSpeedTemperatureOffset,
+                _ => 0
+            };
         }
     }
 

@@ -32,11 +32,13 @@ namespace _Project.Scripts.Utilities.Events
     {
         public ModelSetup Model { get; }
         public SpeedType SpeedType { get; }
+        public float SpeedValue { get; }
 
-        public OnPrintProcessStarted(ModelSetup model, SpeedType speedType)
+        public OnPrintProcessStarted(ModelSetup model, SpeedType speedType, float speedValue)
         {
             Model = model;
             SpeedType = speedType;
+            SpeedValue = speedValue;
         }
     }
 
@@ -44,11 +46,13 @@ namespace _Project.Scripts.Utilities.Events
     {
         public ModelSetup Model { get; }
         public SpeedType SpeedType { get; }
+        public float SpeedValue { get; }
 
-        public OnPrintProcessFinished(ModelSetup model, SpeedType speedType)
+        public OnPrintProcessFinished(ModelSetup model, SpeedType speedType, float speedValue)
         {
             Model = model;
             SpeedType = speedType;
+            SpeedValue = speedValue;
         }
     }
 

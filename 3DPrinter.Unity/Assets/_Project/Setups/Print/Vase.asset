@@ -109,11 +109,4 @@ MonoBehaviour:
     - {x: -0.00157, y: 0}
     - {x: -0.00131, y: -0.00035}
     - {x: 0, y: -0.00062}
-  _temperatureBySpeed:
-  - <SpeedType>k__BackingField: 0
-    <Temperature>k__BackingField: 205
-  - <SpeedType>k__BackingField: 1
-    <Temperature>k__BackingField: 208
-  - <SpeedType>k__BackingField: 2
-    <Temperature>k__BackingField: 215
-  _defaultTemperature: 200
+  <TargetTemperature>k__BackingField: 200

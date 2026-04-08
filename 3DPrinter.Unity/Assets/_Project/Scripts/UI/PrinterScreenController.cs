@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _Project.Scripts.Printer;
 using _Project.Scripts.Printer.Core;
 using _Project.Scripts.Setups.Printer;
+using _Project.Scripts.UI.Tasks;
 using _Project.Scripts.Utilities.Events;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Utilities.Events;
@@ -29,6 +30,7 @@ namespace _Project.Scripts.UI
         [Header("Core")]
         [SerializeField] private PrintProcessController _printProcessController;
         [SerializeField] private Material _filamentMaterial;
+        [SerializeField] private Material _filamentLineMaterial;
 
         [Header("Pages")]
         [SerializeField] private CanvasGroup _screenCanvasGroup;
@@ -47,6 +49,7 @@ namespace _Project.Scripts.UI
         [SerializeField] private TMP_Text _progressText;
 
         private EventBus _eventBus;
+        private TaskManager _taskManager;
         private int _currentModelIndex;
         private SpeedType _currentSpeed;
         private int _currentColorIndex;
@@ -54,9 +57,10 @@ namespace _Project.Scripts.UI
         private bool _isFilamentPlaced;
 
         [Inject]
-        public void Construct(EventBus eventBus)
+        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
         {
             _eventBus = eventBus;
+            _taskManager = taskManager;
         }
 
         private void Awake()
@@ -108,30 +112,52 @@ namespace _Project.Scripts.UI
 
         private void SelectPreviousModel()
         {
-            if (_models.Count == 0 || _printProcessController.IsPrinting)
+            if (_models.Count == 0)
             {
+                Debug.LogWarning("[PrinterScreenController.SelectPreviousModel] Нет доступных моделей для выбора.");
+                _taskManager?.ShowMessage("Нет доступных моделей для выбора.");
+                return;
+            }
+
+            if (_printProcessController.IsPrinting)
+            {
+                Debug.LogWarning("[PrinterScreenController.SelectPreviousModel] Нельзя менять модель во время печати.");
+                _taskManager?.ShowMessage("Нельзя менять модель во время печати.");
                 return;
             }
 
             _currentModelIndex = (_currentModelIndex - 1 + _models.Count) % _models.Count;
             UpdateScreenModelData();
+            _taskManager?.CompleteStep(TaskStepType.ChooseModel);
         }
 
         private void SelectNextModel()
         {
-            if (_models.Count == 0 || _printProcessController.IsPrinting)
+            if (_models.Count == 0)
             {
+                Debug.LogWarning("[PrinterScreenController.SelectNextModel] Нет доступных моделей для выбора.");
+                _taskManager?.ShowMessage("Нет доступных моделей для выбора.");
+                return;
+            }
+
+            if (_printProcessController.IsPrinting)
+            {
+                Debug.LogWarning("[PrinterScreenController.SelectNextModel] Нельзя менять модель во время печати.");
+                _taskManager?.ShowMessage("Нельзя менять модель во время печати.");
                 return;
             }
 
             _currentModelIndex = (_currentModelIndex + 1) % _models.Count;
             UpdateScreenModelData();
+            _taskManager?.CompleteStep(TaskStepType.ChooseModel);
         }
 
         private void SelectNextSpeed()
         {
             if (_printProcessController.IsPrinting)
             {
+                Debug.LogWarning("[PrinterScreenController.SelectNextSpeed] Нельзя менять скорость во время печати.");
+                _taskManager?.ShowMessage("Нельзя менять скорость во время печати.");
                 return;
             }
 
@@ -143,6 +169,7 @@ namespace _Project.Scripts.UI
             };
 
             UpdateSpeedLabel();
+            _taskManager?.CompleteStep(TaskStepType.ChooseSpeed);
         }
 
         private void StartPrint()
@@ -152,8 +179,31 @@ namespace _Project.Scripts.UI
 
         private async UniTaskVoid StartPrintAsync()
         {
-            if (_models.Count == 0 || !_printProcessController.CanStartNextPrint)
+            if (_models.Count == 0)
             {
+                Debug.LogWarning("[PrinterScreenController.StartPrintAsync] Невозможно начать печать: нет доступных моделей.");
+                _taskManager?.ShowMessage("Невозможно начать печать: нет доступных моделей.");
+                return;
+            }
+
+            if (!_isPowered)
+            {
+                Debug.LogWarning("[PrinterScreenController.StartPrintAsync] Невозможно начать печать: принтер выключен.");
+                _taskManager?.ShowMessage("Сначала включите принтер.");
+                return;
+            }
+
+            if (!_isFilamentPlaced)
+            {
+                Debug.LogWarning("[PrinterScreenController.StartPrintAsync] Невозможно начать печать: филамент не установлен.");
+                _taskManager?.ShowMessage("Сначала установите филамент.");
+                return;
+            }
+
+            if (!_printProcessController.CanStartNextPrint)
+            {
+                Debug.LogWarning("[PrinterScreenController.StartPrintAsync] Невозможно начать новую печать: предыдущая печать еще не завершена или модель не собрана.");
+                _taskManager?.ShowMessage("Нельзя начать новую печать, пока предыдущая не завершена.");
                 return;
             }
 
@@ -184,8 +234,17 @@ namespace _Project.Scripts.UI
 
         private void SelectNextColor()
         {
-            if (_printProcessController.IsPrinting || _availableColors.Count == 0)
+            if (_printProcessController.IsPrinting)
             {
+                Debug.LogWarning("[PrinterScreenController.SelectNextColor] Нельзя менять цвет во время печати.");
+                _taskManager?.ShowMessage("Нельзя менять цвет во время печати.");
+                return;
+            }
+
+            if (_availableColors.Count == 0)
+            {
+                Debug.LogWarning("[PrinterScreenController.SelectNextColor] Нет доступных цветов.");
+                _taskManager?.ShowMessage("Нет доступных цветов.");
                 return;
             }
 
@@ -206,6 +265,7 @@ namespace _Project.Scripts.UI
             if (_filamentMaterial != null)
             {
                 _filamentMaterial.color = color;
+                _filamentLineMaterial.color = color;
             }
 
             if (_colorText != null)
@@ -245,6 +305,7 @@ namespace _Project.Scripts.UI
 
         private void OnPrintStarted(OnPrintProcessStarted evt)
         {
+            _taskManager?.CompleteStep(TaskStepType.StartPrint);
             SetProgressPageActive(true);
             RefreshStartButtonState();
         }
@@ -257,6 +318,7 @@ namespace _Project.Scripts.UI
 
         private void OnPrintFinished(OnPrintProcessFinished evt)
         {
+            _taskManager?.CompleteStep(TaskStepType.WaitForPrintFinish);
             RefreshStartButtonState();
         }
 

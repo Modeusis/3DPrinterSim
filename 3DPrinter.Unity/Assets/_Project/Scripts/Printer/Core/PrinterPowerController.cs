@@ -1,4 +1,5 @@
 using _Project.Scripts.Printer;
+using _Project.Scripts.UI.Tasks;
 using _Project.Scripts.Utilities.Events;
 using Game.Scripts.Utilities.Events;
 using UnityEngine;
@@ -9,15 +10,17 @@ namespace _Project.Scripts.Printer.Core
     public class PrinterPowerController : MonoBehaviour
     {
         private EventBus _eventBus;
+        private TaskManager _taskManager;
 
         private bool _isPlugged;
         private bool _isPowerButtonOn;
         private bool _effectivePowerState;
 
         [Inject]
-        public void Construct(EventBus eventBus)
+        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
         {
             _eventBus = eventBus;
+            _taskManager = taskManager;
         }
 
         private void OnEnable()
@@ -69,6 +72,16 @@ namespace _Project.Scripts.Printer.Core
         private void PublishPowerState(bool isOn)
         {
             _effectivePowerState = isOn;
+
+            if (isOn)
+            {
+                _taskManager?.CompleteStep(TaskStepType.TurnOnPrinter);
+            }
+            else
+            {
+                _taskManager?.UncompleteStep(TaskStepType.TurnOnPrinter);
+            }
+
             _eventBus.Publish(new OnPowerStateChanged { IsOn = isOn });
         }
     }
