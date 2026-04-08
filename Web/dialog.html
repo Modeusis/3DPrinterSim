@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Страница раздела</title>
+    <title>База знаний - Creality K1 SE</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -23,7 +23,89 @@
     </header>
 
     <div class="main-container">
-        <h1>Раздел в разработке</h1>
+        <div class="content-block knowledge-page">
+            <section class="knowledge-hero">
+                <div class="knowledge-hero__content">
+                    <span class="knowledge-badge">Интерактивная база знаний</span>
+                    <h1>Диалог с базой знаний по Creality K1 SE</h1>
+                    <p class="theory-text knowledge-intro">
+                        На этой странице собраны ключевые сведения о конструкции, принципе работы и возможностях
+                        3D-принтера Creality K1 SE. Можно выбрать готовый вопрос из базы или задать свой запрос
+                        вручную, а также воспользоваться голосовым вводом и озвучкой ответа.
+                    </p>
+                    <div class="knowledge-highlights">
+                        <div class="knowledge-highlight">
+                            <strong>Тема проекта</strong>
+                            <span>Creality K1 SE</span>
+                        </div>
+                        <div class="knowledge-highlight">
+                            <strong>Голосовые функции</strong>
+                            <span>Ввод и озвучка ответов</span>
+                        </div>
+                        <div class="knowledge-highlight">
+                            <strong>Формат базы</strong>
+                            <span>Триады и готовые вопросы</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="knowledge-hero__aside">
+                    <div class="knowledge-fact-card">
+                        <span class="knowledge-fact-card__label">Макс. скорость</span>
+                        <strong>до 600 мм/с</strong>
+                    </div>
+                    <div class="knowledge-fact-card">
+                        <span class="knowledge-fact-card__label">Кинематика</span>
+                        <strong>CoreXY</strong>
+                    </div>
+                    <div class="knowledge-fact-card">
+                        <span class="knowledge-fact-card__label">Область печати</span>
+                        <strong>220 x 220 x 250 мм</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="knowledge-layout">
+                <div class="knowledge-panel knowledge-panel--dialog">
+                    <div class="knowledge-panel__header">
+                        <div>
+                            <h2>Диалоговое окно</h2>
+                            <p>Задайте вопрос о характеристиках, узлах и принципе работы принтера.</p>
+                            <div class="knowledge-counter" id="knowledge-counter"></div>
+                        </div>
+                        <div class="voice-indicator" id="voice-status">Голосовой ввод: готов</div>
+                    </div>
+
+                    <div class="dialog-window dialog-window--embedded">
+                        <div class="title">История диалога</div>
+                        <div class="history__wrapper" id="history" aria-live="polite"></div>
+
+                        <div class="voice-options">
+                            <label class="voice-toggle">
+                                <input type="checkbox" id="voice-output" checked>
+                                <span>Озвучивать ответы через TTS</span>
+                            </label>
+                            <p class="voice-note">Для голосового ввода рекомендуется использовать Chrome или Edge.</p>
+                        </div>
+
+                        <div class="input__wrapper input__wrapper--row">
+                            <input id="question-input" type="text" placeholder="Например: Какая кинематика у Creality K1 SE?">
+                            <button id="question-voice" type="button">Голосовой ввод</button>
+                            <button id="question-button" type="button">Спросить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knowledge-panel knowledge-panel--questions">
+                    <div class="knowledge-panel__header">
+                        <div>
+                            <h2>Готовые вопросы</h2>
+                            <p>Нажмите на карточку, чтобы сразу отправить вопрос в диалог.</p>
+                        </div>
+                    </div>
+                    <div id="questions" class="knowledge-questions"></div>
+                </div>
+            </section>
+        </div>
     </div>
 
     <footer>
@@ -31,5 +113,6 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/dialog.js"></script>
 </body>
 </html>
