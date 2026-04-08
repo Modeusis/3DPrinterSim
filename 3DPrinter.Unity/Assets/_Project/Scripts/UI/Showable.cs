@@ -1,4 +1,5 @@
 using _Project.Scripts.Setups.Animation;
+using _Project.Scripts.Utilities;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -37,7 +38,9 @@ namespace _Project.Scripts.UI
                 return;
             
             ClearTween();
-            _showTween = Tween.UIAnchoredPosition(_showRect, _openAnimation.Value, _openAnimation.Duration, _openAnimation.Ease);
+            
+            var targetPos = ScreenScaleUtility.Adapt(_openAnimation.Value);
+            _showTween = Tween.UIAnchoredPosition(_showRect, targetPos, _openAnimation.Duration, _openAnimation.Ease);
             
             _isOpen = true;
         }
@@ -48,7 +51,9 @@ namespace _Project.Scripts.UI
                 return;
             
             ClearTween();
-            _showTween = Tween.UIAnchoredPosition(_showRect, _closeAnimation.Value, _closeAnimation.Duration, _closeAnimation.Ease);
+            
+            var targetPos = ScreenScaleUtility.Adapt(_closeAnimation.Value);
+            _showTween = Tween.UIAnchoredPosition(_showRect, targetPos, _closeAnimation.Duration, _closeAnimation.Ease);
             
             _isOpen = false;
         }
@@ -59,7 +64,7 @@ namespace _Project.Scripts.UI
             
             if (_showRect != null)
             {
-                _showRect.anchoredPosition = _closeAnimation.Value;
+                _showRect.anchoredPosition = ScreenScaleUtility.Adapt(_closeAnimation.Value);
             }
             
             _isOpen = false;

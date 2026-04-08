@@ -1,5 +1,7 @@
 using _Project.Scripts.Player.Interaction;
 using _Project.Scripts.Printer;
+using _Project.Scripts.UI.Tasks;
+using _Project.Scripts.Utilities.Events;
 using Game.Scripts.Utilities.Events;
 using PrimeTween;
 using UnityEngine;
@@ -25,8 +27,10 @@ namespace _Project.Scripts.Printer.Plug
         public UnityEvent OnWirePlugged;
         
         private EventBus _eventBus;
+        private TaskManager _taskManager;
         private Sequence _plugSequence;
         private bool _isPlugged;
+        private bool _isPlugToggleBlocked;
         
         private static readonly Vector3 UnpluggedPosition = new Vector3(-0.896084368f, 1.52068841f, -1.18789697f);
         private static readonly Vector3 UnpluggedRotation = new Vector3(0, 240f, 0);
@@ -43,9 +47,10 @@ namespace _Project.Scripts.Printer.Plug
         private const float Duration3 = 1f;
 
         [Inject]
-        public void Construct(EventBus eventBus)
+        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
         {
             _eventBus = eventBus;
+            _taskManager = taskManager;
         }
 
         public void OnBeginHover()
@@ -60,6 +65,13 @@ namespace _Project.Scripts.Printer.Plug
 
         public void OnClick()
         {
+            if (_isPlugToggleBlocked)
+            {
+                Debug.LogWarning("[PrinterPlug.OnClick] Нельзя отключать принтер от сети во время печати.");
+                _taskManager?.ShowMessage("Нельзя отключать принтер от сети во время печати.");
+                return;
+            }
+
             TogglePlug();
         }
 
@@ -105,9 +117,15 @@ namespace _Project.Scripts.Printer.Plug
             {
                 ConnectWire();
                 OnWirePlugged?.Invoke();
+                _taskManager?.CompleteStep(TaskStepType.PlugPrinter);
+            }
+            else
+            {
+                _taskManager?.UncompleteStep(TaskStepType.PlugPrinter);
             }
             
             _eventBus.Publish(new OnInteractableStateChangedEvent<PrinterElement>(PrinterElement.Plug, plugged));
+            _eventBus.Publish(new OnPlugStateChanged { IsPlugged = plugged });
         }
 
         private void ConnectWire()
@@ -149,6 +167,26 @@ namespace _Project.Scripts.Printer.Plug
         private void OnDestroy()
         {
             StopCurrentTween();
+        }
+
+        private void OnEnable()
+        {
+            _eventBus?.Subscribe<OnPrintSafetyLockChanged>(OnPrintSafetyLockChanged);
+        }
+
+        private void OnDisable()
+        {
+            _eventBus?.Unsubscribe<OnPrintSafetyLockChanged>(OnPrintSafetyLockChanged);
+        }
+
+        private void Start()
+        {
+            _eventBus.Publish(new OnPlugStateChanged { IsPlugged = _isPlugged });
+        }
+
+        private void OnPrintSafetyLockChanged(OnPrintSafetyLockChanged evt)
+        {
+            _isPlugToggleBlocked = evt.IsPlugToggleBlocked;
         }
     }
 }

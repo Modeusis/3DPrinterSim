@@ -1,6 +1,6 @@
 using System;
 
-namespace Game.Scripts.Utilities.Events
+namespace _Project.Scripts.Utilities.Events
 {
     public struct OnInteractableStateChangedEvent<TEnum> where TEnum : Enum
     {

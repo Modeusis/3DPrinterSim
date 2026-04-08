@@ -14,7 +14,7 @@ namespace _Project.Scripts.UI.Tooltip
         [Space]
         [SerializeField] private float _fadeInDuration = 0.2f;
         [SerializeField] private float _fadeOutDuration = 0.2f;
-        [SerializeField] private float _hideDelay = 1.5f;
+        [SerializeField] private float _hideDelay = 0.3f;
 
         private Tween _fadeTween;
 

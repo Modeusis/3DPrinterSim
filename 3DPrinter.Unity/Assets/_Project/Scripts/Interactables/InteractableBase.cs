@@ -1,5 +1,6 @@
 using System;
 using _Project.Scripts.Player.Interaction;
+using _Project.Scripts.Utilities.Events;
 using Game.Scripts.Utilities.Events;
 using UnityEngine;
 using Zenject;
@@ -40,7 +41,7 @@ namespace _Project.Scripts.Interactables
             _eventBus.Publish(new OnInteractableHoverEvent(_interactableName, false));
         }
 
-        public void OnClick()
+        public virtual void OnClick()
         {
             ToggleState();
         }

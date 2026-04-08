@@ -1,0 +1,182 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d93cca2ca14c41368e16d69f74693251, type: 3}
+  m_Name: Homer
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Setups.Printer.ModelSetup
+  <Prefab>k__BackingField: {fileID: 3851967878314990277, guid: 7fb8bfd823263d3448d8b3523db6cff3, type: 3}
+  <Screenshot>k__BackingField: {fileID: 21300000, guid: 1376a3a4bba28ab4a9b80a82c0070fa9, type: 3}
+  <TargetHeatPanelHeight>k__BackingField: 0.00945
+  _layers:
+  - <Z>k__BackingField: 0.00935
+    <Points>k__BackingField:
+    - {x: 0, y: -0.0002}
+    - {x: 0.00183, y: -0.0002}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: -0.0002}
+    - {x: 0, y: -0.0002}
+  - <Z>k__BackingField: 0.009215
+    <Points>k__BackingField:
+    - {x: 0, y: -0.0002}
+    - {x: 0.00183, y: -0.0002}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: -0.0002}
+    - {x: 0, y: -0.0002}
+  - <Z>k__BackingField: 0.009098
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00183, y: 0}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.008927
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00183, y: 0}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.008647
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00183, y: 0}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.008385
+    <Points>k__BackingField:
+    - {x: 0, y: -0.000117}
+    - {x: 0.00183, y: -0.000117}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: -0.000117}
+    - {x: 0, y: -0.000117}
+  - <Z>k__BackingField: 0.008185
+    <Points>k__BackingField:
+    - {x: 0, y: -0.000117}
+    - {x: 0.00183, y: -0.000117}
+    - {x: 0.00183, y: 0.000396}
+    - {x: -0.00183, y: 0.000396}
+    - {x: -0.00183, y: -0.000117}
+    - {x: 0, y: -0.000117}
+  - <Z>k__BackingField: 0.008061
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00183, y: 0}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.007823
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00183, y: 0}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.007481
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00183, y: 0}
+    - {x: 0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0.000444}
+    - {x: -0.00183, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.007139
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00184, y: 0}
+    - {x: 0.00184, y: -0.00098}
+    - {x: 0.00262, y: -0.001037}
+    - {x: 0.00314, y: -0.000609}
+    - {x: 0.00256, y: 0.000351}
+    - {x: 0.00164, y: 0.000693}
+    - {x: -0.00158, y: 0.000693}
+    - {x: -0.00158, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.0069
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00184, y: 0}
+    - {x: 0.00184, y: -0.00098}
+    - {x: 0.00262, y: -0.001037}
+    - {x: 0.00314, y: -0.000609}
+    - {x: 0.00256, y: 0.000351}
+    - {x: 0.00164, y: 0.000693}
+    - {x: -0.00158, y: 0.000693}
+    - {x: -0.00228, y: 0.0004}
+    - {x: -0.00278, y: -0.001021}
+    - {x: -0.00226, y: -0.001021}
+    - {x: -0.00226, y: 0}
+    - {x: -0.00158, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.006618
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00184, y: 0}
+    - {x: 0.00184, y: -0.00098}
+    - {x: 0.00262, y: -0.001037}
+    - {x: 0.00314, y: -0.000609}
+    - {x: 0.00256, y: 0.000351}
+    - {x: 0.00164, y: 0.000693}
+    - {x: -0.00158, y: 0.000693}
+    - {x: -0.00228, y: 0.0004}
+    - {x: -0.00278, y: -0.001021}
+    - {x: -0.00226, y: -0.001021}
+    - {x: -0.00226, y: 0}
+    - {x: -0.00158, y: 0}
+    - {x: 0, y: 0}
+  - <Z>k__BackingField: 0.006236
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00095, y: 0}
+    - {x: 0.00095, y: 0.000748}
+    - {x: -0.00095, y: 0.000748}
+    - {x: -0.00095, y: 0}
+  - <Z>k__BackingField: 0.00586
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00095, y: 0}
+    - {x: 0.00095, y: 0.000748}
+    - {x: 0, y: 0.00094}
+    - {x: -0.00095, y: 0.000748}
+    - {x: -0.00095, y: 0}
+  - <Z>k__BackingField: 0.0056
+    <Points>k__BackingField:
+    - {x: 0, y: 0}
+    - {x: 0.00095, y: 0}
+    - {x: 0.00095, y: 0.000748}
+    - {x: 0, y: 0.00094}
+    - {x: -0.00095, y: 0.000748}
+    - {x: -0.00095, y: 0}
+  - <Z>k__BackingField: 0.00532
+    <Points>k__BackingField:
+    - {x: 0, y: 0.00024}
+    - {x: 0.00095, y: 0.00024}
+    - {x: 0.00095, y: 0.000748}
+    - {x: 0, y: 0.00094}
+    - {x: -0.00095, y: 0.000748}
+    - {x: -0.00095, y: 0.00024}
+  - <Z>k__BackingField: 0.00532
+    <Points>k__BackingField:
+    - {x: 0, y: 0.00035}
+    - {x: 0.00078, y: 0.00035}
+    - {x: 0.00078, y: 0.000748}
+    - {x: 0, y: 0.00095}
+    - {x: -0.00078, y: 0.000748}
+    - {x: -0.00078, y: 0.00035}
+  <TargetTemperature>k__BackingField: 208
