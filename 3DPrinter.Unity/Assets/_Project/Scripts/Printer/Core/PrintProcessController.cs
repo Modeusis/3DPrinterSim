@@ -178,7 +178,8 @@ namespace _Project.Scripts.Printer.Core
                 Destroy(_currentPrintedModel);
             }
 
-            _currentPrintedModel = Instantiate(modelSetup.Prefab, _printedModelRoot.position, _printedModelRoot.rotation, _printedModelRoot);
+            _currentPrintedModel = Instantiate(modelSetup.Prefab, _printedModelRoot);
+            _currentPrintedModel.transform.localPosition = Vector3.zero;
             ApplyColorToRenderers(_currentPrintedModel.GetComponentsInChildren<Renderer>(), _selectedPrintColor);
             ApplyClippingPlane(_currentPrintedModel);
 

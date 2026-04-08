@@ -48,7 +48,20 @@ namespace _Project.Scripts.Printer.Core
                 var dy = targetY - startY;
                 var totalDistance = Mathf.Sqrt(dx * dx + dy * dy);
 
-                if (totalDistance < 0.001f) return;
+                if (totalDistance <= Mathf.Epsilon)
+                {
+                    _extruderX.localPosition = new Vector3(targetX, _extruderX.localPosition.y, _extruderX.localPosition.z);
+                    _yAxis.localPosition = new Vector3(_yAxis.localPosition.x, targetY, _yAxis.localPosition.z);
+                    return;
+                }
+
+                if (speed <= Mathf.Epsilon)
+                {
+                    Debug.LogWarning("Скорость перемещения головки <= 0, точка будет установлена мгновенно.");
+                    _extruderX.localPosition = new Vector3(targetX, _extruderX.localPosition.y, _extruderX.localPosition.z);
+                    _yAxis.localPosition = new Vector3(_yAxis.localPosition.x, targetY, _yAxis.localPosition.z);
+                    return;
+                }
 
                 var duration = totalDistance / speed;
                 var elapsedTime = 0f;

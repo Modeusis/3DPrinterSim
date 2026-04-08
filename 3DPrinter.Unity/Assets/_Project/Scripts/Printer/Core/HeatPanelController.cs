@@ -9,7 +9,7 @@ namespace _Project.Scripts.Printer.Core
         [SerializeField] private Transform _panelTransform;
 
         [field: SerializeField] public float MoveSpeed { get; private set; } = 5f;
-        public float StartLocalZ { get; private set; }
+        [field: SerializeField] public float StartLocalZ { get; private set; } = 0.0035f;
 
         private void Awake()
         {
@@ -17,8 +17,6 @@ namespace _Project.Scripts.Printer.Core
             {
                 _panelTransform = transform;
             }
-
-            StartLocalZ = _panelTransform.localPosition.z;
         }
 
         public async UniTask MoveToHeightAsync(float targetZ, CancellationToken token)

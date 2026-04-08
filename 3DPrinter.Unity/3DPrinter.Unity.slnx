@@ -1,0 +1,10 @@
+﻿<Solution>
+  <Project Path="Zenject.csproj" />
+  <Project Path="BetterHierarchy.csproj" />
+  <Project Path="Zenject-Editor.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="BetterHierarchyDemoScripts.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="PrimeTween.Installer.csproj" />
+  <Project Path="sc.utilities.selectionhistory.editor.csproj" />
+</Solution>
