@@ -3,8 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Симулятор</title>
+    <title>Симулятор - Курсовой проект</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .simulator-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        #unity-container {
+            width: 100%;
+            max-width: 1000px;
+            aspect-ratio: 16 / 9;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            border: 1px solid #333;
+        }
+
+        #unity-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            outline: none;
+        }
+
+        #unity-loading-bar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40%;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .loading-text {
+            color: #ecf0f1;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        #unity-progress-bar-empty {
+            width: 100%;
+            height: 6px;
+            background-color: #333;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        #unity-progress-bar-full {
+            width: 0%;
+            height: 100%;
+            background-color: #3498db;
+            transition: width 0.2s ease-out;
+        }
+
+        #unity-warning {
+            position: absolute;
+            left: 50%;
+            top: 5%;
+            transform: translate(-50%);
+            color: white;
+            z-index: 99;
+            text-align: center;
+        }
+
+        .itch-btn-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .itch-download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fa5c5c;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 16px 32px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #c94949;
+            transition: all 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .itch-download-btn:hover {
+            background-color: #ff6b6b;
+            box-shadow: 0 4px 0 #d94f4f;
+        }
+
+        .itch-download-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #c94949;
+        }
+
+        .itch-download-btn span {
+            margin-left: 10px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: normal;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -23,7 +138,31 @@
     </header>
 
     <div class="main-container">
-        <iframe src="Build/index.html" title="Unity Simulator"></iframe>
+        <div class="title-page">
+            <h2>Интерактивный симулятор</h2>
+            <p>Дождитесь загрузки приложения в окне ниже. Управление осуществляется с помощью мыши и клавиатуры.</p>
+        </div>
+
+        <div class="simulator-section">
+            <div id="unity-container">
+                <canvas id="unity-canvas" tabindex="-1"></canvas>
+                
+                <div id="unity-loading-bar">
+                    <div class="loading-text">Загрузка симулятора...</div>
+                    <div id="unity-progress-bar-empty">
+                        <div id="unity-progress-bar-full"></div>
+                    </div>
+                </div>
+                
+                <div id="unity-warning"></div>
+            </div>
+
+            <div class="itch-btn-container">
+                <a href="https://modeusis.itch.io/casual-3d-printer-sim/download/_6XdVTBYEh2Zqem48_X9ZZxRsUQrHObSzZ_D2K1l" class="itch-download-btn">
+                    Скачать для Windows <span>(64-bit, .zip)</span>
+                </a>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -31,5 +170,60 @@
     </footer>
 
     <script src="js/main.js"></script>
+    
+    <script>
+        var canvas = document.querySelector("#unity-canvas");
+
+        function unityShowBanner(msg, type) {
+            var warningBanner = document.querySelector("#unity-warning");
+            function updateBannerVisibility() {
+                warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+            }
+            var div = document.createElement('div');
+            div.innerHTML = msg;
+            warningBanner.appendChild(div);
+            
+            if (type == 'error') {
+                div.style = 'background: #e74c3c; padding: 10px; border-radius: 4px; margin-top: 10px; font-weight: bold;';
+            } else if (type == 'warning') {
+                div.style = 'background: #f1c40f; color: #333; padding: 10px; border-radius: 4px; margin-top: 10px;';
+                setTimeout(function() {
+                    warningBanner.removeChild(div);
+                    updateBannerVisibility();
+                }, 5000);
+            }
+            updateBannerVisibility();
+        }
+
+        var buildUrl = "./assets/unity/Build";
+        var loaderUrl = buildUrl + "/unity.loader.js";
+        
+        var config = {
+            dataUrl: buildUrl + "/unity.data",
+            frameworkUrl: buildUrl + "/unity.framework.js",
+            codeUrl: buildUrl + "/unity.wasm",
+            streamingAssetsUrl: "./assets/unity/StreamingAssets",
+            companyName: "Modeus",
+            productName: "3D Printer Simulator",
+            productVersion: "0.1.0",
+            showBanner: unityShowBanner,
+        };
+
+        document.querySelector("#unity-loading-bar").style.display = "flex";
+
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(canvas, config, (progress) => {
+                document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+            }).then((unityInstance) => {
+                document.querySelector("#unity-loading-bar").style.display = "none";
+            }).catch((message) => {
+                unityShowBanner(message, 'error');
+            });
+        };
+
+        document.body.appendChild(script);
+    </script>
 </body>
 </html>
