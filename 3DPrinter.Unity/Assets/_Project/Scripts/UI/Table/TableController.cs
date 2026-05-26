@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using _Project.Scripts.Audio;
 using _Project.Scripts.Printer.Core;
 using _Project.Scripts.Setups.Printer;
 using _Project.Scripts.Setups.Tooltip;
@@ -43,6 +44,7 @@ namespace _Project.Scripts.UI.Table
 
         private EventBus _eventBus;
         private TaskManager _taskManager;
+        private AudioService _audioService;
         private ModelSetup _lastPrintedModel;
         private Complexity _lastComplexity = new Complexity();
         private float _lastSpeed;
@@ -55,10 +57,16 @@ namespace _Project.Scripts.UI.Table
         private bool _isShowed;
 
         [Inject]
-        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
+        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null, [InjectOptional] AudioService audioService = null)
         {
             _eventBus = eventBus;
             _taskManager = taskManager;
+            _audioService = audioService;
+        }
+
+        public void EraseAll()
+        {
+            Clear();
         }
         
         public void Awake()
@@ -187,6 +195,7 @@ namespace _Project.Scripts.UI.Table
 
             nextRow.Fill(newData);
             _hasCompletedPrint = false;
+            _audioService?.PlaySfx(SoundType.TableFill);
             _taskManager?.CompleteStep(TaskStepType.FillTable);
             _taskManager?.ClearMessage();
 
@@ -260,10 +269,13 @@ namespace _Project.Scripts.UI.Table
             {
                 row.Clear();
             }
-            
+
             _averageRow.Clear();
             _isFilled = false;
             _hasCompletedPrint = false;
+
+            // _audioService is null during Awake; null-conditional avoids the boot-time sound.
+            _audioService?.PlaySfx(SoundType.TableErase);
         }
 
         private void OnPrintStarted(OnPrintProcessStarted evt)

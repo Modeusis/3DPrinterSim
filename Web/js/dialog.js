@@ -1,3 +1,7 @@
+const GROQ_API_KEY = (typeof window !== 'undefined' && window.GROQ_API_KEY) || '';
+const GROQ_MODEL = 'llama-3.1-8b-instant';
+const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
+
 document.addEventListener('DOMContentLoaded', () => {
     const questionsRoot = document.getElementById('questions');
     const questionInput = document.getElementById('question-input');
@@ -279,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         recognition.start();
     }
 
-    function ask(customQuestion) {
+    async function ask(customQuestion) {
         const question = (customQuestion || questionInput.value).trim();
 
         if (!question) {
@@ -288,19 +292,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
         stopAudioPlayback();
         appendMessage(question, 'question__wrapper');
+        questionInput.value = '';
 
-        const answer = getAnswer(question);
-        const answerElement = appendMessage(answer, 'answer__wrapper', true);
+        const localAnswer = getAnswer(question);
 
-        bindMediaPreview(answerElement);
-        bindMediaLoadScroll(answerElement);
+        if (localAnswer) {
+            const answerElement = appendMessage(localAnswer, 'answer__wrapper', true);
+            bindMediaPreview(answerElement);
+            bindMediaLoadScroll(answerElement);
+            scrollChatToBottom();
+
+            if (voiceOutput.checked) {
+                speakAnswer(stripHtml(localAnswer));
+            }
+            return;
+        }
+
+        const pendingElement = appendMessage('Ищу ответ через языковую модель...', 'answer__wrapper');
+        scrollChatToBottom();
+
+        const llmAnswer = await askGroq(question);
+        const finalAnswer = llmAnswer || 'Ответ не найден. Попробуйте спросить о моделировании, узлах 3D-принтера, характеристиках Creality K1 SE или областях применения.';
+
+        const bubble = pendingElement.querySelector('.dialog-message__bubble');
+        bubble.textContent = finalAnswer;
+
+        if (llmAnswer) {
+            const badge = document.createElement('span');
+            badge.className = 'llm-badge';
+            badge.textContent = '★';
+            badge.title = 'Ответ сгенерирован языковой моделью на основе базы знаний';
+            badge.setAttribute('aria-label', 'Ответ от языковой модели');
+            bubble.appendChild(badge);
+        }
+
         scrollChatToBottom();
 
         if (voiceOutput.checked) {
-            speakAnswer(stripHtml(answer));
+            speakAnswer(finalAnswer);
+        }
+    }
+
+    async function askGroq(question) {
+        if (!GROQ_API_KEY || GROQ_API_KEY === 'PASTE_YOUR_GROQ_API_KEY_HERE') {
+            console.warn('GROQ_API_KEY не задан. Создайте Web/js/config.local.js (см. config.example.js).');
+            return null;
         }
 
-        questionInput.value = '';
+        const knowledgeContext = knowledge
+            .map((triad) => `- ${triad[0]} ${triad[1]} ${stripHtml(triad[2])}`)
+            .join('\n');
+
+        const systemPrompt = `Ты — ассистент, отвечающий на вопросы о 3D-принтере Creality K1 SE, имитационном моделировании и истории/применении 3D-печати. Отвечай ТОЛЬКО на основе приведённой ниже базы знаний. Если в базе нет информации для точного ответа — честно скажи «В базе знаний нет точного ответа на этот вопрос». Не выдумывай факты, не используй внешние знания. Отвечай кратко (1–3 предложения), на русском языке.\n\nБАЗА ЗНАНИЙ:\n${knowledgeContext}`;
+
+        try {
+            const response = await fetch(GROQ_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${GROQ_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: GROQ_MODEL,
+                    temperature: 0.2,
+                    max_tokens: 300,
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: question }
+                    ]
+                })
+            });
+
+            if (!response.ok) {
+                console.error('Groq API error:', response.status, await response.text());
+                return null;
+            }
+
+            const data = await response.json();
+            const content = data?.choices?.[0]?.message?.content?.trim();
+            return content || null;
+        } catch (error) {
+            console.error('Groq request failed:', error);
+            return null;
+        }
     }
 
     function appendMessage(content, className, isHtml = false) {
@@ -519,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        return result ? answer : 'Ответ не найден. Попробуйте спросить о моделировании, узлах 3D-принтера, характеристиках Creality K1 SE или областях применения.';
+        return result ? answer : null;
     }
 
     function findBestMatch(question) {

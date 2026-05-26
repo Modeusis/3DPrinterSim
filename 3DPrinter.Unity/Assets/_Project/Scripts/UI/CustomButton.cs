@@ -1,3 +1,4 @@
+using _Project.Scripts.Audio;
 using _Project.Scripts.Setups.Animation;
 using PrimeTween;
 using TMPro;
@@ -5,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Zenject;
 
 namespace _Project.Scripts.UI
 {
@@ -13,11 +15,25 @@ namespace _Project.Scripts.UI
     {
         [SerializeField, Space] private Image _buttonImage;
         [SerializeField] private TMP_Text _buttonText;
-        
+
         [SerializeField, Space] private Vector3AnimationProperty _hoverProperty;
         [SerializeField] private Vector3AnimationProperty _clickProperty;
         [SerializeField] private Vector3AnimationProperty _idleProperty;
         [SerializeField] private Vector3AnimationProperty _disableProperty;
+
+        [Header("Sounds")]
+        [SerializeField] private SoundType _hoverSound = SoundType.ButtonHover;
+        [SerializeField] private SoundType _clickSound = SoundType.ButtonClick;
+        [SerializeField] private bool _playHoverSound = true;
+        [SerializeField] private bool _playClickSound = true;
+
+        private AudioService _audioService;
+
+        [Inject]
+        public void Construct([InjectOptional] AudioService audioService)
+        {
+            _audioService = audioService;
+        }
         
         private Tween _hoverTween;
         private Tween _clickTween;
@@ -40,29 +56,39 @@ namespace _Project.Scripts.UI
             StopTweens();
             
             _hoverTween = Tween.Scale(
-                transform, 
-                _hoverProperty.Value, 
-                _hoverProperty.Duration, 
+                transform,
+                _hoverProperty.Value,
+                _hoverProperty.Duration,
                 _hoverProperty.Ease
             );
-            
+
+            if (_playHoverSound)
+            {
+                _audioService?.PlaySfx(_hoverSound);
+            }
+
             OnHover?.Invoke();
         }
-        
+
         public void OnPointerDown(PointerEventData eventData)
         {
             if (!_isActive)
                 return;
-            
+
             StopTweens();
-            
+
             _clickTween = Tween.Scale(
-                transform, 
-                _clickProperty.Value, 
-                _clickProperty.Duration, 
+                transform,
+                _clickProperty.Value,
+                _clickProperty.Duration,
                 _clickProperty.Ease
             );
-            
+
+            if (_playClickSound)
+            {
+                _audioService?.PlaySfx(_clickSound);
+            }
+
             OnClick?.Invoke();
         }
 

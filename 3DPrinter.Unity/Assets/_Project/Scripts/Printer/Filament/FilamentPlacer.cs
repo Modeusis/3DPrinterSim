@@ -174,6 +174,7 @@ namespace _Project.Scripts.Printer.Filament
             }
 
             StartRotationLoop();
+            _eventBus?.Publish(new OnSpoolRotationStateChanged(true));
         }
 
         public void StopRotation()
@@ -181,6 +182,7 @@ namespace _Project.Scripts.Printer.Filament
             if (_rotationTween.isAlive)
             {
                 _rotationTween.Stop();
+                _eventBus?.Publish(new OnSpoolRotationStateChanged(false));
             }
         }
 
