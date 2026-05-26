@@ -875,3 +875,13 @@ iframe {
         font-size: 0.92rem;
     }
 }
+.llm-badge {
+    display: inline-block;
+    margin-left: 6px;
+    color: #f5a623;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: help;
+    vertical-align: baseline;
+    text-shadow: 0 0 4px rgba(245, 166, 35, 0.4);
+}
