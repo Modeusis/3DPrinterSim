@@ -1,3 +1,4 @@
+using _Project.Scripts.Audio;
 using _Project.Scripts.Player.Interaction;
 using _Project.Scripts.Printer;
 using _Project.Scripts.UI.Tasks;
@@ -28,6 +29,7 @@ namespace _Project.Scripts.Printer.Plug
         
         private EventBus _eventBus;
         private TaskManager _taskManager;
+        private AudioService _audioService;
         private Sequence _plugSequence;
         private bool _isPlugged;
         private bool _isPlugToggleBlocked;
@@ -47,10 +49,11 @@ namespace _Project.Scripts.Printer.Plug
         private const float Duration3 = 1f;
 
         [Inject]
-        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
+        public void Construct(EventBus eventBus, [InjectOptional] TaskManager taskManager = null, [InjectOptional] AudioService audioService = null)
         {
             _eventBus = eventBus;
             _taskManager = taskManager;
+            _audioService = audioService;
         }
 
         public void OnBeginHover()
@@ -102,7 +105,8 @@ namespace _Project.Scripts.Printer.Plug
         private void PlayUnplugSequence()
         {
             DisconnectWire();
-            
+            _audioService?.PlaySfx(SoundType.PlugOut);
+
             _plugSequence = Sequence.Create()
                 .Group(Tween.LocalPosition(_endAnchor, IntermediatePosition2, Duration3, _ease))
                 .Chain(Tween.LocalPosition(_endAnchor, IntermediatePosition1, Duration2, _ease))

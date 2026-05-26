@@ -2,6 +2,9 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using _Project.Scripts.Setups.Printer;
+using _Project.Scripts.Utilities.Events;
+using Game.Scripts.Utilities.Events;
+using Zenject;
 
 namespace _Project.Scripts.Printer.Core
 {
@@ -12,12 +15,20 @@ namespace _Project.Scripts.Printer.Core
         [SerializeField] private Transform _yAxis;
         [Tooltip("Сам экструдер, который двигается по локальной оси X (дочерний объект балки или независимый)")]
         [SerializeField] private Transform _extruderX;
-    
+
         [Header("Настройки скорости (ед. Unity в секунду)")]
         [SerializeField] private SpeedProfilesSetup _speedProfiles;
-        
+
         public bool IsMoving { get; private set; }
         public Vector2 StartPoint { get; private set; }
+
+        private EventBus _eventBus;
+
+        [Inject]
+        public void Construct(EventBus eventBus)
+        {
+            _eventBus = eventBus;
+        }
 
         private void Awake()
         {
@@ -33,7 +44,8 @@ namespace _Project.Scripts.Printer.Core
             }
     
             IsMoving = true;
-    
+            _eventBus?.Publish(new OnPrintHeadMovementStateChanged(true));
+
             try
             {
                 var speed = _speedProfiles.GetSpeed(speedType);
@@ -89,6 +101,7 @@ namespace _Project.Scripts.Printer.Core
             finally
             {
                 IsMoving = false;
+                _eventBus?.Publish(new OnPrintHeadMovementStateChanged(false));
             }
         }
 

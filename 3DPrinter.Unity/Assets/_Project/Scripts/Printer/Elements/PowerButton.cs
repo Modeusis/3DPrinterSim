@@ -1,3 +1,4 @@
+using _Project.Scripts.Audio;
 using _Project.Scripts.Interactables;
 using _Project.Scripts.UI.Tasks;
 using _Project.Scripts.Utilities.Events;
@@ -11,16 +12,18 @@ namespace _Project.Scripts.Printer.Elements
     {
         private EventBus _eventBus;
         private TaskManager _taskManager;
+        private AudioService _audioService;
         private bool _isPowerToggleBlocked;
 
         protected override string AnimatorParameterName => "IsActive";
         protected override PrinterElement StateElement => PrinterElement.PowerButton;
 
         [Inject]
-        public void ConstructLocal(EventBus eventBus, [InjectOptional] TaskManager taskManager = null)
+        public void ConstructLocal(EventBus eventBus, [InjectOptional] TaskManager taskManager = null, [InjectOptional] AudioService audioService = null)
         {
             _eventBus = eventBus;
             _taskManager = taskManager;
+            _audioService = audioService;
         }
 
         private void OnEnable()
@@ -43,6 +46,9 @@ namespace _Project.Scripts.Printer.Elements
             }
 
             base.OnClick();
+
+            // CurrentState reflects the new toggle state after base.OnClick().
+            _audioService?.PlaySfx(CurrentState ? SoundType.PowerOn : SoundType.PowerOff);
         }
 
         private void OnPrintSafetyLockChanged(OnPrintSafetyLockChanged evt)

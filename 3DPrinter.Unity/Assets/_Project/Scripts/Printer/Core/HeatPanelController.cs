@@ -1,6 +1,9 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using _Project.Scripts.Utilities.Events;
+using Game.Scripts.Utilities.Events;
+using Zenject;
 
 namespace _Project.Scripts.Printer.Core
 {
@@ -10,6 +13,14 @@ namespace _Project.Scripts.Printer.Core
 
         [field: SerializeField] public float MoveSpeed { get; private set; } = 5f;
         [field: SerializeField] public float StartLocalZ { get; private set; } = 0.0035f;
+
+        private EventBus _eventBus;
+
+        [Inject]
+        public void Construct(EventBus eventBus)
+        {
+            _eventBus = eventBus;
+        }
 
         private void Awake()
         {
@@ -23,22 +34,38 @@ namespace _Project.Scripts.Printer.Core
         {
             Vector3 startPos = _panelTransform.localPosition;
             Vector3 targetPos = new Vector3(startPos.x, startPos.y, targetZ);
-        
+
             float distance = Mathf.Abs(targetZ - startPos.z);
+
+            if (distance <= Mathf.Epsilon)
+            {
+                _panelTransform.localPosition = targetPos;
+                return;
+            }
+
             float duration = distance / Mathf.Max(0.001f, MoveSpeed);
             float elapsed = 0;
 
-            while (elapsed < duration)
-            {
-                token.ThrowIfCancellationRequested();
-                elapsed += Time.deltaTime;
-                float t = elapsed / duration;
-            
-                _panelTransform.localPosition = Vector3.Lerp(startPos, targetPos, t);
-                await UniTask.Yield(PlayerLoopTiming.Update, token);
-            }
+            _eventBus?.Publish(new OnHeatPanelMovementStateChanged(true));
 
-            _panelTransform.localPosition = targetPos;
+            try
+            {
+                while (elapsed < duration)
+                {
+                    token.ThrowIfCancellationRequested();
+                    elapsed += Time.deltaTime;
+                    float t = elapsed / duration;
+
+                    _panelTransform.localPosition = Vector3.Lerp(startPos, targetPos, t);
+                    await UniTask.Yield(PlayerLoopTiming.Update, token);
+                }
+
+                _panelTransform.localPosition = targetPos;
+            }
+            finally
+            {
+                _eventBus?.Publish(new OnHeatPanelMovementStateChanged(false));
+            }
         }
 
         public UniTask MoveToStartAsync(CancellationToken token)
